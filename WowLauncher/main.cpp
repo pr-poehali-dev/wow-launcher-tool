@@ -1,12 +1,7 @@
-/*
- * WoW Multi-Instance Launcher
- * Компилятор: w64devkit (MinGW-w64, 32-bit)
- * Сборка:
- *   cd WowLauncher
- *   g++ -m32 -O2 -mwindows -o WowLauncher.exe main.cpp -lcomctl32 -lcomdlg32 -lshlwapi
- *
- * Требования: Windows 10, 32-bit компилятор w64devkit
- */
+// WoW Multi-Instance Launcher
+// Компилятор: w64devkit (MinGW-w64)
+// Сборка: g++ -O2 -std=c++17 -mwindows -o WowLauncher.exe main.cpp -lcomctl32 -lcomdlg32 -lshlwapi
+// Требования: Windows 10, w64devkit
 
 #define UNICODE
 #define _UNICODE
@@ -122,7 +117,7 @@ void LogWarn(const wchar_t* msg)    { AppendLog(L"[WRN]", msg); }
 
 // ─── Создать log.conf с шаблоном ─────────────────────────────────────────────
 void CreateDefaultConf(const std::wstring& path) {
-    std::wofstream f(path);
+    std::wofstream f(path.c_str());
     if (f.is_open()) {
         f << L"# WoW Launcher — файл учётных данных\n";
         f << L"# Заполните поля ниже и сохраните файл\n\n";
@@ -137,7 +132,7 @@ void CreateDefaultConf(const std::wstring& path) {
 // ─── Прочитать log.conf ───────────────────────────────────────────────────────
 WowAccount ReadConf(const std::wstring& path) {
     WowAccount acc;
-    std::wifstream f(path);
+    std::wifstream f(path.c_str());
     std::wstring line;
     while (std::getline(f, line)) {
         if (line.empty() || line[0] == L'#') continue;
@@ -172,7 +167,7 @@ void WriteToLogFile(const std::wstring& msg) {
     PathRemoveFileSpecW(exeDir);
     std::wstring logPath = std::wstring(exeDir) + L"\\launcher.log";
 
-    std::wofstream f(logPath, std::ios::app);
+    std::wofstream f(logPath.c_str(), std::ios::app);
     if (f.is_open()) {
         f << L"[" << GetTimeStr() << L"] " << msg << L"\n";
     }
